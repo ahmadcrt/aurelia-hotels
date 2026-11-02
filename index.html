@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AURELIA HOTELS — Luxury Hospitality (Fictional Demo)</title>
+<meta name="description" content="AURELIA HOTELS is a fictional luxury hotel brand created as a portfolio project.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css"><link rel="stylesheet" href="css/responsive.css">
+</head><body>
+<main>
+<section class="hero"><div class="wrap">
+  <p class="eyebrow">Lagos · A fictional demonstration hotel</p>
+  <h1>Where quiet luxury<br>meets Nigerian warmth</h1>
+  <p>Refined rooms, exceptional dining and unhurried service — an imagined stay, designed in detail.</p>
+  <form class="search" action="rooms.html" method="get" id="search">
+    <div><label for="ci">Check-in</label><input id="ci" name="checkin" type="date" required></div>
+    <div><label for="co">Check-out</label><input id="co" name="checkout" type="date" required></div>
+    <div><label for="g">Guests</label><select id="g" name="guests"><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option><option>6</option></select></div>
+    <div><label for="r">Rooms</label><select id="r" name="rooms"><option selected>1</option><option>2</option><option>3</option></select></div>
+    <button class="btn" type="submit">Explore Rooms</button>
+  </form>
+  <p class="err" id="search-err" role="alert"></p>
+</div></section>
+
+<section class="section"><div class="wrap">
+  <p class="eyebrow">Rooms &amp; Suites</p><h2>Featured accommodation</h2>
+  <div class="grid" id="featured"><div class="state">Loading rooms…</div></div>
+  <p class="disclaimer">All rates are demonstration prices in Nigerian naira (₦).</p>
+</div></section>
+
+<section class="section dark"><div class="wrap grid">
+  <div><p class="eyebrow">Dining</p><h2>The Aurelia Table</h2><p>A fictional restaurant celebrating contemporary Nigerian and international cuisine.</p><a class="btn btn-line" href="dining.html">View dining</a></div>
+  <div><p class="eyebrow">Facilities</p><h2>Pool, spa &amp; fitness</h2><p>Illustrative facilities for a portfolio concept — not real offerings.</p><a class="btn btn-line" href="facilities.html">See facilities</a></div>
+  <div><p class="eyebrow">Offers</p><h2>Weekend &amp; extended stays</h2><p>Sample packages with demonstration terms.</p><a class="btn btn-line" href="offers.html">View offers</a></div>
+</div></section>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="js/config.js"></script><script src="js/supabase.js"></script><script src="js/main.js"></script>
+<script>
+(function(){
+  const ci=document.getElementById("ci"),co=document.getElementById("co"),err=document.getElementById("search-err");
+  const iso=d=>d.toISOString().slice(0,10),t=new Date(),tm=new Date(Date.now()+864e5);
+  ci.min=iso(t);ci.value=iso(tm);co.min=iso(tm);co.value=iso(new Date(Date.now()+2*864e5));
+  ci.addEventListener("change",()=>{const n=new Date(ci.value);n.setDate(n.getDate()+1);co.min=iso(n);if(co.value<=ci.value)co.value=iso(n)});
+  document.getElementById("search").addEventListener("submit",e=>{
+    err.textContent="";
+    if(ci.value<iso(t)){e.preventDefault();err.textContent="Check-in cannot be in the past."}
+    else if(co.value<=ci.value){e.preventDefault();err.textContent="Check-out must be after check-in."}
+  });
+  const box=document.getElementById("featured");
+  addEventListener("DOMContentLoaded",async()=>{
+    if(!window.sb){box.innerHTML='<div class="state err">Database connection is not configured.</div>';return}
+    const {data,error}=await sb.from("room_types").select("slug,name,description,bed_type,max_guests,nightly_rate_ngn,image_url").eq("is_active",true).order("nightly_rate_ngn");
+    if(error){box.innerHTML='<div class="state err">Could not load rooms. Please try again later.</div>';return}
+    if(!data.length){box.innerHTML='<div class="state">No rooms available to display.</div>';return}
+    box.innerHTML=data.map(r=>`<article class="card"><div class="img" role="img" aria-label="${esc(r.name)}" style="background-image:url('${esc(r.image_url)}'),linear-gradient(135deg,#13213d,#0b1426)"></div>
+      <div class="body"><h3>${esc(r.name)}</h3><span class="tag">${esc(r.bed_type)} · up to ${r.max_guests} guests</span><p>${esc(r.description)}</p>
+      <span class="price">${ngn(r.nightly_rate_ngn)} / night <small>(demo)</small></span>
+      <a class="btn btn-sm" href="room-details.html?slug=${encodeURIComponent(r.slug)}">View room</a></div></article>`).join("");
+  });
+})();
+</script>
+</body></html>
