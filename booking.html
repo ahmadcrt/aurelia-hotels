@@ -1,0 +1,15 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Book Your Stay — AURELIA HOTELS</title><meta name="robots" content="noindex"><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"><link rel="stylesheet" href="css/style.css"><link rel="stylesheet" href="css/booking.css"><link rel="stylesheet" href="css/responsive.css"></head><body>
+<main><section class="page-head"><div class="wrap"><p class="eyebrow">Reservation</p><h1>Complete your booking</h1></div></section>
+<section class="section"><div class="wrap"><div class="checkout" id="checkout">
+<form class="panel" id="form" novalidate><h3>Guest details</h3>
+<div class="field"><label for="name">Full name</label><input id="name" autocomplete="name" required></div>
+<div class="field"><label for="email">Email</label><input id="email" type="email" readonly></div>
+<div class="field"><label for="phone">Phone (optional)</label><input id="phone" type="tel" autocomplete="tel"></div>
+<div class="field"><label for="requests">Special requests (optional)</label><textarea id="requests" rows="3" maxlength="500"></textarea></div>
+<p class="notice"><strong>Simulated payment.</strong> Do not enter card details — none are collected. A reservation here is a demonstration record only.</p>
+<p class="notice"><strong>Cancellation policy (demo):</strong> free cancellation up to 48 hours before check-in. After that, only an administrator can cancel.</p>
+<div class="field"><label><input id="terms" type="checkbox" style="width:auto"> I accept the cancellation policy</label></div>
+<p id="form-msg" class="err" role="alert"></p>
+<button class="btn" id="submit" type="submit">Confirm reservation (demo)</button></form>
+<aside class="panel" id="summary" aria-live="polite"><div class="state">Loading summary…</div></aside>
+</div></div></section></main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script><script src="js/config.js"></script><script src="js/supabase.js"></script><script src="js/main.js"></script><script src="js/booking.js"></script></body></html>

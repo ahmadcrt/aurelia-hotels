@@ -1,0 +1,14 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Rooms &amp; Suites — AURELIA HOTELS</title><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"><link rel="stylesheet" href="css/style.css"><link rel="stylesheet" href="css/booking.css"><link rel="stylesheet" href="css/responsive.css"></head><body>
+<main><section class="page-head"><div class="wrap"><p class="eyebrow">Accommodation</p><h1>Rooms &amp; Suites</h1><p>Demonstration rates in Nigerian naira (₦).</p></div></section>
+<section class="section" style="padding-top:0"><div class="wrap">
+<form class="filters" onsubmit="return false" aria-label="Filter rooms">
+<div><label for="f-q">Search</label><input id="f-q" type="search" placeholder="e.g. bathtub"></div>
+<div><label for="f-cat">Category</label><select id="f-cat"><option value="">All</option></select></div>
+<div><label for="f-ci">Check-in</label><input id="f-ci" type="date"></div>
+<div><label for="f-co">Check-out</label><input id="f-co" type="date"></div>
+<div><label for="f-g">Guests</label><select id="f-g"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>8</option></select></div>
+<div><label for="f-rm">Rooms</label><select id="f-rm"><option>1</option><option>2</option><option>3</option></select></div>
+<div><label for="f-sort">Sort</label><select id="f-sort"><option value="low">Price: low to high</option><option value="high">Price: high to low</option><option value="cap">Capacity</option></select></div>
+</form><p id="date-err" class="err" role="alert"></p>
+<div class="grid" id="list" aria-live="polite"><div class="state">Loading rooms…</div></div>
+</div></section></main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script><script src="js/config.js"></script><script src="js/supabase.js"></script><script src="js/main.js"></script><script src="js/rooms.js"></script></body></html>
