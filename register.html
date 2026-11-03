@@ -1,0 +1,12 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
+<title>Create account — AURELIA HOTELS</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css"><link rel="stylesheet" href="css/auth.css"><link rel="stylesheet" href="css/responsive.css"></head><body>
+<main class="auth"><div class="panel"><h1>Create your account</h1><p class="disclaimer">Demo hotel — use a test email, not real personal data.</p>
+<form id="register-form" novalidate><div class="field"><label for="name">Full name</label><input id="name" autocomplete="name" required></div>
+<div class="field"><label for="email">Email</label><input id="email" type="email" autocomplete="email" required></div>
+<div class="field"><label for="password">Password (8+ characters)</label><input id="password" type="password" autocomplete="new-password" required></div>
+<div class="field"><label for="password2">Confirm password</label><input id="password2" type="password" autocomplete="new-password" required></div>
+<p id="reg-msg" class="msg" role="alert"></p><button id="reg-btn" class="btn" type="submit">Create account</button></form>
+<div class="links"><span>Already registered?</span><a href="login.html">Sign in</a></div></div></main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script><script src="js/config.js"></script><script src="js/supabase.js"></script><script src="js/main.js"></script><script src="js/auth.js"></script></body></html>
