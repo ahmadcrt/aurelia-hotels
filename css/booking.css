@@ -10,3 +10,10 @@
 .field{margin-bottom:14px}.field .err{font-size:.8rem}.ok-box{background:#e8f6ee;border:1px solid #17703a;padding:20px;border-radius:12px}
 .ref{font-family:monospace;font-size:1.6rem;letter-spacing:.08em}
 @media(max-width:800px){.detail,.checkout{grid-template-columns:1fr}}
+/* iOS date-input overflow fix */
+.filters>div,.search>div,.field{min-width:0}
+input[type=date]{min-width:0;max-width:100%;-webkit-appearance:none;appearance:none;min-height:46px;text-align:left}
+select{max-width:100%}
+/* room photos: consistent 4:3 crop, graceful fallback if an image fails */
+.card .img,.detail .hero-img{overflow:hidden;background:linear-gradient(135deg,#13213d,#0b1426)}
+.card .img img,.detail .hero-img img{width:100%;height:100%;object-fit:cover;display:block}
