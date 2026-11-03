@@ -1,0 +1,18 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">
+<title>Sign in — AURELIA HOTELS</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css"><link rel="stylesheet" href="css/auth.css"><link rel="stylesheet" href="css/responsive.css"></head><body>
+<main class="auth"><div class="panel">
+<div id="login-box"><h1>Welcome back</h1><p class="disclaimer">Demo hotel — use a test email, not real personal data.</p>
+<form id="login-form" novalidate><div class="field"><label for="email">Email</label><input id="email" type="email" autocomplete="email" required></div>
+<div class="field"><label for="password">Password</label><input id="password" type="password" autocomplete="current-password" required></div>
+<p id="login-msg" class="msg" role="alert"></p><button id="login-btn" class="btn" type="submit">Sign in</button></form>
+<div class="links"><button class="linkbtn" id="show-reset" type="button">Forgot password?</button><a href="register.html">Create an account</a></div></div>
+<div id="reset-box" class="hidden"><h1>Reset password</h1><form id="reset-form" novalidate><div class="field"><label for="reset-email">Email</label><input id="reset-email" type="email" required></div>
+<p id="reset-msg" class="msg" role="status"></p><button id="reset-btn" class="btn" type="submit">Send reset link</button></form>
+<div class="links"><button class="linkbtn" id="back-login" type="button">Back to sign in</button></div></div>
+<div id="newpw-box" class="hidden"><h1>Choose a new password</h1><form id="newpw-form" novalidate><div class="field"><label for="new-pw">New password (8+ characters)</label><input id="new-pw" type="password" autocomplete="new-password"></div>
+<div class="field"><label for="new-pw2">Confirm password</label><input id="new-pw2" type="password" autocomplete="new-password"></div>
+<p id="newpw-msg" class="msg" role="alert"></p><button id="newpw-btn" class="btn" type="submit">Update password</button></form></div>
+</div></main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script><script src="js/config.js"></script><script src="js/supabase.js"></script><script src="js/main.js"></script><script src="js/auth.js"></script></body></html>
