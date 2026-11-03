@@ -42,7 +42,7 @@ async function initList() {
   $("f-ci").min = today; $("f-ci").value = s.ci; $("f-co").value = s.co; $("f-g").value = s.g; $("f-rm").value = s.rm;
   if (!sb) { list.innerHTML = '<div class="state err">Database connection is not configured.</div>'; return; }
   const { data, error } = await sb.from("room_types").select(COLS).eq("is_active", true);
-  if (error) { list.innerHTML = '<div class="state err">Could not load rooms. Please try again.</div>'; return; }
+  if (error) { console.error(error); list.innerHTML = '<div class="state err">Could not load rooms. Please try again.<br><small>Details: ' + esc(error.message || error.code || "unknown") + '</small></div>'; return; }
   $("f-cat").insertAdjacentHTML("beforeend", data.map(r => `<option value="${esc(r.id)}">${esc(r.name)}</option>`).join(""));
   let av = {};
   async function refresh(refetch) {
