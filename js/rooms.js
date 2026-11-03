@@ -2,6 +2,9 @@
 const q = new URLSearchParams(location.search);
 const iso = d => d.toISOString().slice(0, 10);
 const today = iso(new Date());
+const withTimeout = (p, ms = 10000) => Promise.race([p, new Promise(r => setTimeout(() => r({ data: null, error: { message: "The request timed out." } }), ms))]);
+const altText = r => `${r.name} — ${r.bed_type}, ${r.size_sqm} m², up to ${r.max_guests} guests`;
+const picture = (r, cls) => `<div class="${cls}"><img src="${esc(r.image_url)}" alt="${esc(altText(r))}" loading="lazy" width="800" height="600" onerror="this.remove()"></div>`;
 const nightsBetween = (a, b) => Math.round((new Date(b) - new Date(a)) / 864e5);
 const datesOk = (a, b) => !!a && !!b && a >= today && b > a;
 
@@ -12,7 +15,7 @@ async function availability(types, s) {
   const map = {};
   if (!datesOk(s.ci, s.co) || !sb) return map;
   await Promise.all(types.map(async t => {
-    const { data, error } = await sb.rpc("available_room_count", { p_type: t.id, p_in: s.ci, p_out: s.co });
+    const { data, error } = await withTimeout(sb.rpc("available_room_count", { p_type: t.id, p_in: s.ci, p_out: s.co }));
     map[t.id] = error ? null : data;
   }));
   return map;
@@ -26,7 +29,7 @@ function availBadge(n, s) {
 function cardHTML(r, s, av) {
   const nights = datesOk(s.ci, s.co) ? nightsBetween(s.ci, s.co) : 0;
   const ok = datesOk(s.ci, s.co) && r.max_guests * s.rm >= s.g && av[r.id] >= s.rm;
-  return `<article class="card"><div class="img" role="img" aria-label="${esc(r.name)}" loading="lazy" style="background-image:url('${esc(r.image_url)}'),linear-gradient(135deg,#13213d,#0b1426)"></div>
+  return `<article class="card">${picture(r, "img")}
   <div class="body"><h3>${esc(r.name)}</h3><span class="tag">${esc(r.bed_type)} · ${r.size_sqm} m² · up to ${r.max_guests} guests</span>
   <p>${esc(r.description)}</p>${availBadge(av[r.id], s)}
   <span class="price">${ngn(r.nightly_rate_ngn)} / night <small>(demo price)</small></span>
@@ -41,7 +44,7 @@ async function initList() {
   const s = { ci: q.get("checkin") || "", co: q.get("checkout") || "", g: +q.get("guests") || 1, rm: +q.get("rooms") || 1 };
   $("f-ci").min = today; $("f-ci").value = s.ci; $("f-co").value = s.co; $("f-g").value = s.g; $("f-rm").value = s.rm;
   if (!sb) { list.innerHTML = '<div class="state err">Database connection is not configured.</div>'; return; }
-  const { data, error } = await sb.from("room_types").select(COLS).eq("is_active", true);
+  const { data, error } = await withTimeout(sb.from("room_types").select(COLS).eq("is_active", true));
   if (error) { console.error(error); list.innerHTML = '<div class="state err">Could not load rooms. Please try again.<br><small>Details: ' + esc(error.message || error.code || "unknown") + '</small></div>'; return; }
   $("f-cat").insertAdjacentHTML("beforeend", data.map(r => `<option value="${esc(r.id)}">${esc(r.name)}</option>`).join(""));
   let av = {};
@@ -68,12 +71,12 @@ async function initDetail() {
   const box = document.getElementById("detail");
   const s = { ci: q.get("checkin") || "", co: q.get("checkout") || "", g: +q.get("guests") || 1, rm: +q.get("rooms") || 1 };
   if (!sb) { box.innerHTML = '<div class="state err">Database connection is not configured.</div>'; return; }
-  const { data, error } = await sb.from("room_types").select(COLS).eq("is_active", true);
+  const { data, error } = await withTimeout(sb.from("room_types").select(COLS).eq("is_active", true));
   if (error) { box.innerHTML = '<div class="state err">Could not load this room.</div>'; return; }
   const r = data.find(x => x.slug === q.get("slug"));
   if (!r) { box.innerHTML = '<div class="state">Room not found. <a href="rooms.html">Browse rooms</a></div>'; return; }
   document.title = r.name + " — AURELIA HOTELS";
-  box.innerHTML = `<div class="hero-img" role="img" aria-label="${esc(r.name)} photograph" style="background-image:url('${esc(r.image_url)}'),linear-gradient(135deg,#13213d,#0b1426)"></div>
+  box.innerHTML = `${picture(r, "hero-img")}
   <div><p class="eyebrow">${esc(r.bed_type)} · ${r.size_sqm} m² · up to ${r.max_guests} guests</p><h1>${esc(r.name)}</h1><p>${esc(r.description)}</p>
   <ul class="chips">${r.amenities.map(a => `<li>${esc(a)}</li>`).join("")}</ul>
   <p class="price" style="font-size:1.4rem">${ngn(r.nightly_rate_ngn)} <small>/ night · demo price</small></p>
@@ -100,9 +103,10 @@ async function initDetail() {
   $("d-book").addEventListener("click", e => { if ($("d-book").getAttribute("aria-disabled") === "true") { e.preventDefault(); check(); } });
   if (datesOk(s.ci, s.co)) check();
   const rel = data.filter(x => x.id !== r.id).slice(0, 3), box2 = document.getElementById("related");
-  box2.innerHTML = rel.map(x => `<article class="card"><div class="img" style="background-image:url('${esc(x.image_url)}'),linear-gradient(135deg,#13213d,#0b1426)"></div><div class="body"><h3>${esc(x.name)}</h3><span class="price">${ngn(x.nightly_rate_ngn)} / night</span><a class="btn btn-sm" href="room-details.html?slug=${encodeURIComponent(x.slug)}">View</a></div></article>`).join("");
+  box2.innerHTML = rel.map(x => `<article class="card">${picture(x, "img")}<div class="body"><h3>${esc(x.name)}</h3><span class="price">${ngn(x.nightly_rate_ngn)} / night</span><a class="btn btn-sm" href="room-details.html?slug=${encodeURIComponent(x.slug)}">View</a></div></article>`).join("");
 }
 addEventListener("DOMContentLoaded", () => {
-  if (document.getElementById("list")) initList();
-  if (document.getElementById("detail")) initDetail();
+  const fail = id => e => { console.error(e); const el = document.getElementById(id); if (el) el.innerHTML = '<div class="state err">Something went wrong while loading rooms. Please refresh or try again shortly.</div>'; };
+  if (document.getElementById("list")) initList().catch(fail("list"));
+  if (document.getElementById("detail")) initDetail().catch(fail("detail"));
 });
